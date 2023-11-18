@@ -19,11 +19,12 @@ jobs:
       - name: Update image version
         run: |
           cd module-app
-          sed -i "s/customer-service:.*\"/customer-service:${{ env.APP_VERSION }}\"/" c9-01-customer-service.tf
-          sed -i "s/order-service:.*\"/order-service:${{ env.APP_VERSION }}\"/" c9-02-order-service.tf
-          sed -i "s/payment-service:.*\"/payment-service:${{ env.APP_VERSION }}\"/" c9-03-payment-service.tf
-          sed -i "s/restaurant-service:.*\"/restaurant-service:${{ env.APP_VERSION }}\"/" c9-04-restaurant-service.tf
-          sed -i "s/gateway-service:.*\"/gateway-service:${{ env.APP_VERSION }}\"/" c9-05-gateway-service.tf
+          sed -i "s/elastic-query-service:.*\"/elastic-query-service:${{ env.APP_VERSION }}\"/" c9-01-elastic-query-service.tf
+          sed -i "s/analytics-service:.*\"/analytics-service:${{ env.APP_VERSION }}\"/" c9-02-analytics-service.tf
+          sed -i "s/kafka-streams-service:.*\"/kafka-streams-service:${{ env.APP_VERSION }}\"/" c9-03-kafka-streams-service.tf
+          sed -i "s/twitter-to-kafka-service:.*\"/twitter-to-kafka-service:${{ env.APP_VERSION }}\"/" c9-04-twitter-to-kafka-service.tf
+          sed -i "s/kafka-to-elastic-service:.*\"/kafka-to-elastic-service:${{ env.APP_VERSION }}\"/" c9-05-kafka-to-elastic-service.tf          
+          sed -i "s/gateway-service:.*\"/gateway-service:${{ env.APP_VERSION }}\"/" c9-06-gateway-service.tf
       - name: Commit updated manifests
         uses: stefanzweifel/git-auto-commit-action@v4
         with:

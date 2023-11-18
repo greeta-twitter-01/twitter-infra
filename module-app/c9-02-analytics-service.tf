@@ -1,22 +1,22 @@
-resource "kubernetes_config_map_v1" "payment" {
+resource "kubernetes_config_map_v1" "analytics" {
   metadata {
-    name      = "payment"
+    name      = "analytics"
     labels = {
-      app = "payment"
+      app = "analytics"
     }
   }
 
   data = {
-    "application.yml" = file("${path.module}/app-conf/payment.yml")
+    "application.yml" = file("${path.module}/app-conf/analytics.yml")
   }
 }
 
-resource "kubernetes_deployment_v1" "payment_deployment" {
-  depends_on = [kubernetes_deployment_v1.order_postgres_deployment]
+resource "kubernetes_deployment_v1" "analytics_deployment" {
+  depends_on = [kubernetes_deployment_v1.twitter_postgres_deployment]
   metadata {
-    name = "payment"
+    name = "analytics"
     labels = {
-      app = "payment"
+      app = "analytics"
     }
   }
  
@@ -24,13 +24,13 @@ resource "kubernetes_deployment_v1" "payment_deployment" {
     replicas = 1
     selector {
       match_labels = {
-        app = "payment"
+        app = "analytics"
       }
     }
     template {
       metadata {
         labels = {
-          app = "payment"
+          app = "analytics"
         }
         annotations = {
           "prometheus.io/scrape" = "true"
@@ -42,19 +42,16 @@ resource "kubernetes_deployment_v1" "payment_deployment" {
         service_account_name = "spring-cloud-kubernetes"      
         
         container {
-          image = "ghcr.io/greeta-restaurant-01/payment-service:f86173d1bb5bcfe5ea3ecc1b91057147c159655c"
-          name  = "payment"
+          image = "ghcr.io/greeta-twitter-01/analytics-service:f86173d1bb5bcfe5ea3ecc1b91057147c159655c"
+          name  = "analytics"
           image_pull_policy = "Always"
           port {
             container_port = 8080
-          }
+          } 
           port {
-            container_port = 8003
-          }           
-          env {
-            name = "SPRING_DATASOURCE_URL"
-            value = "jdbc:postgresql://payment-postgres:5432/paymentdb"
-          }            
+            container_port = 8002
+          }  
+
           env {
             name  = "SPRING_CLOUD_BOOTSTRAP_ENABLED"
             value = "true"
@@ -72,7 +69,7 @@ resource "kubernetes_deployment_v1" "payment_deployment" {
 
           env {
             name  = "OTEL_SERVICE_NAME"
-            value = "payment"
+            value = "analytics"
           }
 
           env {
@@ -85,15 +82,15 @@ resource "kubernetes_deployment_v1" "payment_deployment" {
             value = "none"
           }
 
-           env {
+          env {
             name  = "BPL_DEBUG_ENABLED"
             value = "true"
           }
 
           env {
             name  = "BPL_DEBUG_PORT"
-            value = "8003"
-          }          
+            value = "8002"
+          }         
 
           # resources {
           #   requests = {
@@ -138,9 +135,9 @@ resource "kubernetes_deployment_v1" "payment_deployment" {
   }
 }
 
-resource "kubernetes_horizontal_pod_autoscaler_v1" "payment_hpa" {
+resource "kubernetes_horizontal_pod_autoscaler_v1" "analytics_hpa" {
   metadata {
-    name = "payment-hpa"
+    name = "analytics-hpa"
   }
   spec {
     max_replicas = 2
@@ -148,27 +145,32 @@ resource "kubernetes_horizontal_pod_autoscaler_v1" "payment_hpa" {
     scale_target_ref {
       api_version = "apps/v1"
       kind = "Deployment"
-      name = kubernetes_deployment_v1.payment_deployment.metadata[0].name 
+      name = kubernetes_deployment_v1.analytics_deployment.metadata[0].name 
     }
     target_cpu_utilization_percentage = 70
   }
 }
 
-resource "kubernetes_service_v1" "payment_service" {
-  depends_on = [kubernetes_deployment_v1.payment_deployment]
+resource "kubernetes_service_v1" "analytics_service" {
+  depends_on = [kubernetes_deployment_v1.analytics_deployment]
   metadata {
-    name = "payment"
+    name = "analytics"
     labels = {
-      app = "payment"
+      app = "analytics"
       spring-boot = "true"
     }
   }
   spec {
     selector = {
-      app = "payment"
+      app = "analytics"
     }
     port {
+      name = "prod"
       port = 8080
     }
+    port {
+      name = "debug"
+      port = 8002
+    }    
   }
 }

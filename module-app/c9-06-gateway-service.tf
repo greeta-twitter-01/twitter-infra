@@ -1,22 +1,40 @@
-resource "kubernetes_config_map_v1" "customer" {
+resource "kubernetes_config_map_v1" "gateway" {
   metadata {
-    name      = "customer"
+    name      = "gateway"
     labels = {
-      app = "customer"
+      app = "gateway"
     }
   }
 
   data = {
-    "application.yml" = file("${path.module}/app-conf/customer.yml")
+    "gateway.yml" = file("${path.module}/app-conf/gateway.yml")
   }
 }
 
-resource "kubernetes_deployment_v1" "customer_deployment" {
-  depends_on = [kubernetes_deployment_v1.order_postgres_deployment]
+resource "kubernetes_secret_v1" "gateway" {
   metadata {
-    name = "customer"
+    name = "gateway"
+  }
+
+  data = {
+    "spring.redis.host"     = "gateway-redis"
+    "spring.redis.port"     = "6379"
+    "spring.redis.username" = "default"
+  }
+}
+
+
+resource "kubernetes_deployment_v1" "gateway_deployment" {
+  depends_on = [kubernetes_deployment_v1.gateway_redis_deployment,
+                kubernetes_deployment_v1.elastic_query_deployment,
+                kubernetes_deployment_v1.analytics_deployment,
+                kubernetes_deployment_v1.kafka_streams_deployment,
+                kubernetes_deployment_v1.kafka_to_elastic_deployment,
+                kubernetes_deployment_v1.twitter_to_kafka_deployment]
+  metadata {
+    name = "gateway"
     labels = {
-      app = "customer"
+      app = "gateway"
     }
   }
  
@@ -24,13 +42,13 @@ resource "kubernetes_deployment_v1" "customer_deployment" {
     replicas = 1
     selector {
       match_labels = {
-        app = "customer"
+        app = "gateway"
       }
     }
     template {
       metadata {
         labels = {
-          app = "customer"
+          app = "gateway"
         }
         annotations = {
           "prometheus.io/scrape" = "true"
@@ -39,28 +57,34 @@ resource "kubernetes_deployment_v1" "customer_deployment" {
         }        
       }
       spec {
-        service_account_name = "spring-cloud-kubernetes"      
+        service_account_name = "spring-cloud-kubernetes"
+
+        volume {
+          name = "gateway-config-volume"    
+          config_map {
+            name = "gateway"
+          }
+        }
+
+        volume {
+          name = "gateway-secret-volume"
+          secret {
+            secret_name = "gateway"
+          }
+        }               
         
         container {
-          image = "ghcr.io/greeta-restaurant-01/customer-service:f86173d1bb5bcfe5ea3ecc1b91057147c159655c"
-          name  = "customer"
+          image = "ghcr.io/greeta-twitter-01/gateway-service:f86173d1bb5bcfe5ea3ecc1b91057147c159655c"
+          name  = "gateway"
           image_pull_policy = "Always"
           port {
             container_port = 8080
-          }  
-          port {
-            container_port = 8001
+          }
+
+          env {
+            name  = "SPRING_CONFIG_LOCATION"
+            value = "classpath:application.yml,file:/config-repo/gateway.yml"
           } 
-
-          env {
-            name  = "SPRING_CLOUD_BOOTSTRAP_ENABLED"
-            value = "true"
-          }
-
-          env {
-            name  = "SPRING_CLOUD_KUBERNETES_SECRETS_ENABLEAPI"
-            value = "true"
-          }
 
           env {
             name  = "JAVA_TOOL_OPTIONS"
@@ -69,7 +93,7 @@ resource "kubernetes_deployment_v1" "customer_deployment" {
 
           env {
             name  = "OTEL_SERVICE_NAME"
-            value = "customer"
+            value = "gateway"
           }
 
           env {
@@ -80,12 +104,7 @@ resource "kubernetes_deployment_v1" "customer_deployment" {
           env {
             name  = "OTEL_METRICS_EXPORTER"
             value = "none"
-          }
-
-          env {
-            name  = "BPL_JVM_THREAD_COUNT"
-            value = "50"
-          }
+          } 
 
           env {
             name  = "BPL_DEBUG_ENABLED"
@@ -94,9 +113,8 @@ resource "kubernetes_deployment_v1" "customer_deployment" {
 
           env {
             name  = "BPL_DEBUG_PORT"
-            value = "8001"
-          }       
-          
+            value = "8000"
+          }                 
 
           # resources {
           #   requests = {
@@ -133,17 +151,28 @@ resource "kubernetes_deployment_v1" "customer_deployment" {
           #   }
           #   initial_delay_seconds = 20
           #   period_seconds        = 15
-          # }  
-         
+          # }                           
+
+          volume_mount {
+            name       = "gateway-config-volume"
+            mount_path = "/config-repo"
+          }
+
+          volume_mount {
+            name      = "gateway-secret-volume"
+            mount_path = "/workspace/secrets/redis"
+          }             
+ 
         }
+
       }
     }
   }
 }
 
-resource "kubernetes_horizontal_pod_autoscaler_v1" "customer_hpa" {
+resource "kubernetes_horizontal_pod_autoscaler_v1" "gateway_hpa" {
   metadata {
-    name = "customer-hpa"
+    name = "gateway-hpa"
   }
   spec {
     max_replicas = 2
@@ -151,32 +180,23 @@ resource "kubernetes_horizontal_pod_autoscaler_v1" "customer_hpa" {
     scale_target_ref {
       api_version = "apps/v1"
       kind = "Deployment"
-      name = kubernetes_deployment_v1.customer_deployment.metadata[0].name 
+      name = kubernetes_deployment_v1.gateway_deployment.metadata[0].name 
     }
     target_cpu_utilization_percentage = 70
   }
 }
 
-resource "kubernetes_service_v1" "customer_service" {
-  depends_on = [kubernetes_deployment_v1.customer_deployment]
+resource "kubernetes_service_v1" "gateway_service" {
+  depends_on = [kubernetes_deployment_v1.gateway_deployment]
   metadata {
-    name = "customer"
-    labels = {
-      app = "customer"
-      spring-boot = "true"
-    }
+    name = "gateway"
   }
   spec {
     selector = {
-      app = "customer"
+      app = "gateway"
     }
     port {
-      name = "prod"
       port = 8080
     }
-    port {
-      name = "debug"
-      port = 8001
-    }    
   }
 }

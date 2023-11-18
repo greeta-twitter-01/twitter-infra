@@ -2,10 +2,11 @@ resource "kubernetes_ingress_v1" "ingress_default" {
   depends_on = [helm_release.loadbalancer_controller,
                 helm_release.external_dns,
                 kubernetes_service_v1.gateway_service,
-                kubernetes_service_v1.customer_service,
-                kubernetes_service_v1.payment_service,
-                kubernetes_service_v1.order_service,
-                kubernetes_service_v1.restaurant_service,
+                kubernetes_service_v1.elastic_query_service,
+                kubernetes_service_v1.analytics_service,
+                kubernetes_service_v1.kafka_streams_service,
+                kubernetes_service_v1.twitter_to_kafka_service,
+                kubernetes_service_v1.kafka_to_elastic_service,
                 kubernetes_service_v1.keycloak_server_service,
                 kubernetes_ingress_class_v1.ingress_class_default]
   wait_for_load_balancer = true
@@ -14,7 +15,7 @@ resource "kubernetes_ingress_v1" "ingress_default" {
     namespace = "default"
     annotations = {
       # Load Balancer Name
-      "alb.ingress.kubernetes.io/group.name" = "order-lb"
+      "alb.ingress.kubernetes.io/group.name" = "twitter-lb"
       "alb.ingress.kubernetes.io/load-balancer-name" = "ingress-default"
       # Ingress Core Settings
       "alb.ingress.kubernetes.io/scheme" = "internet-facing"
@@ -37,7 +38,7 @@ resource "kubernetes_ingress_v1" "ingress_default" {
       # SSL Redirect Setting
       "alb.ingress.kubernetes.io/ssl-redirect" = 443
       # External DNS - For creating a Record Set in Route53
-      "external-dns.alpha.kubernetes.io/hostname" = "orderapi.greeta.net, keycloak.greeta.net"
+      "external-dns.alpha.kubernetes.io/hostname" = "twitterapi.greeta.net, keycloak.greeta.net"
       "alb.ingress.kubernetes.io/target-type" = "ip"
     }  
   }
@@ -126,10 +127,11 @@ resource "kubernetes_ingress_v1" "ingress_observability_stack" {
   depends_on = [helm_release.loadbalancer_controller,
                 helm_release.external_dns,
                 kubernetes_service_v1.gateway_service,
-                kubernetes_service_v1.customer_service,
-                kubernetes_service_v1.order_service,                
-                kubernetes_service_v1.payment_service,
-                kubernetes_service_v1.restaurant_service,                
+                kubernetes_service_v1.elastic_query_service,
+                kubernetes_service_v1.analytics_service,
+                kubernetes_service_v1.kafka_streams_service,
+                kubernetes_service_v1.twitter_to_kafka_service,
+                kubernetes_service_v1.kafka_to_elastic_service,                
                 kubernetes_service_v1.keycloak_server_service,
                 null_resource.deploy_grafana_script,
                 null_resource.update_kubeconfig,
@@ -141,7 +143,7 @@ resource "kubernetes_ingress_v1" "ingress_observability_stack" {
     namespace = "observability-stack"
     annotations = {
       # Load Balancer Name
-      "alb.ingress.kubernetes.io/group.name" = "order-lb"
+      "alb.ingress.kubernetes.io/group.name" = "twitter-lb"
       "alb.ingress.kubernetes.io/load-balancer-name" = "ingress-default"
       # Ingress Core Settings
       "alb.ingress.kubernetes.io/scheme" = "internet-facing"

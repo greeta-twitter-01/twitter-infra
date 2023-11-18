@@ -1,22 +1,22 @@
-resource "kubernetes_config_map_v1" "order" {
+resource "kubernetes_config_map_v1" "twitter_to_kafka" {
   metadata {
-    name      = "order"
+    name      = "twitter-to-kafka"
     labels = {
-      app = "order"
+      app = "twitter-to-kafka"
     }
   }
 
   data = {
-    "application.yml" = file("${path.module}/app-conf/order.yml")
+    "application.yml" = file("${path.module}/app-conf/twitter-to-kafka.yml")
   }
 }
 
-resource "kubernetes_deployment_v1" "order_deployment" {
-  depends_on = [kubernetes_deployment_v1.order_postgres_deployment]
+resource "kubernetes_deployment_v1" "twitter_to_kafka_deployment" {
+  depends_on = [kubernetes_deployment_v1.twitter_postgres_deployment]
   metadata {
-    name = "order"
+    name = "twitter-to-kafka"
     labels = {
-      app = "order"
+      app = "twitter-to-kafka"
     }
   }
  
@@ -24,13 +24,13 @@ resource "kubernetes_deployment_v1" "order_deployment" {
     replicas = 1
     selector {
       match_labels = {
-        app = "order"
+        app = "twitter-to-kafka"
       }
     }
     template {
       metadata {
         labels = {
-          app = "order"
+          app = "twitter-to-kafka"
         }
         annotations = {
           "prometheus.io/scrape" = "true"
@@ -42,16 +42,15 @@ resource "kubernetes_deployment_v1" "order_deployment" {
         service_account_name = "spring-cloud-kubernetes"      
         
         container {
-          image = "ghcr.io/greeta-restaurant-01/order-service:f86173d1bb5bcfe5ea3ecc1b91057147c159655c"
-          name  = "order"
+          image = "ghcr.io/greeta-twitter-01/twitter-to-kafka-service:f86173d1bb5bcfe5ea3ecc1b91057147c159655c"
+          name  = "twitter-to-kafka"
           image_pull_policy = "Always"
           port {
             container_port = 8080
-          } 
+          }
           port {
-            container_port = 8002
-          }  
-
+            container_port = 8004
+          }                    
           env {
             name  = "SPRING_CLOUD_BOOTSTRAP_ENABLED"
             value = "true"
@@ -69,7 +68,7 @@ resource "kubernetes_deployment_v1" "order_deployment" {
 
           env {
             name  = "OTEL_SERVICE_NAME"
-            value = "order"
+            value = "twitter-to-kafka"
           }
 
           env {
@@ -89,8 +88,8 @@ resource "kubernetes_deployment_v1" "order_deployment" {
 
           env {
             name  = "BPL_DEBUG_PORT"
-            value = "8002"
-          }         
+            value = "8004"
+          }           
 
           # resources {
           #   requests = {
@@ -135,9 +134,9 @@ resource "kubernetes_deployment_v1" "order_deployment" {
   }
 }
 
-resource "kubernetes_horizontal_pod_autoscaler_v1" "order_hpa" {
+resource "kubernetes_horizontal_pod_autoscaler_v1" "twitter_to_kafka_hpa" {
   metadata {
-    name = "order-hpa"
+    name = "twitter-to-kafka-hpa"
   }
   spec {
     max_replicas = 2
@@ -145,32 +144,27 @@ resource "kubernetes_horizontal_pod_autoscaler_v1" "order_hpa" {
     scale_target_ref {
       api_version = "apps/v1"
       kind = "Deployment"
-      name = kubernetes_deployment_v1.order_deployment.metadata[0].name 
+      name = kubernetes_deployment_v1.twitter_to_kafka_deployment.metadata[0].name 
     }
     target_cpu_utilization_percentage = 70
   }
 }
 
-resource "kubernetes_service_v1" "order_service" {
-  depends_on = [kubernetes_deployment_v1.order_deployment]
+resource "kubernetes_service_v1" "twitter_to_kafka_service" {
+  depends_on = [kubernetes_deployment_v1.twitter_to_kafka_deployment]
   metadata {
-    name = "order"
+    name = "twitter-to-kafka"
     labels = {
-      app = "order"
+      app = "twitter-to-kafka"
       spring-boot = "true"
     }
   }
   spec {
     selector = {
-      app = "order"
+      app = "twitter-to-kafka"
     }
     port {
-      name = "prod"
       port = 8080
     }
-    port {
-      name = "debug"
-      port = 8002
-    }    
   }
 }

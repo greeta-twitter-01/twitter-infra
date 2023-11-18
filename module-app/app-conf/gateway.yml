@@ -57,25 +57,37 @@ spring:
         locator:
           enabled: true
       routes:
-        - id: customer
-          uri: ${CUSTOMER_SERVICE_URL:http://customer:8080}
+        - id: elastic-query
+          uri: ${ELASTIC_QUERY_SERVICE_URL:http://elastic-query:8080}
           predicates:
-            - Path=/customer/**
+            - Path=/elastic-query/**
           filters:
-            - RewritePath=/customer/(?<path>.*), /$\{path}
+            - RewritePath=/elastic-query/(?<path>.*), /$\{path}
             - name: CircuitBreaker
               args:
-                name: customerCircuitBreaker
-                fallbackUri: forward:/customer-fallback
-        - id: order
-          uri: ${ORDER_SERVICE_URL:http://order:8080}
+                name: queryServiceCircuitBreaker
+                fallbackUri: forward:/fallback/query-fallback
+        - id: analytics
+          uri: ${ANALYTICS_SERVICE_URL:http://analytics:8080}
           predicates:
-            - Path=/order/**
+            - Path=/analytics/**
           filters:
-            - RewritePath=/order/(?<path>.*), /$\{path}
+            - RewritePath=/analytics/(?<path>.*), /$\{path}
             - name: CircuitBreaker
               args:
-                name: orderCircuitBreaker
+                name: analyticsServiceCircuitBreaker
+                fallbackUri: forward:/fallback/analytics-fallback
+        - id: kafka-streams
+          uri: ${KAFKA_STREAMS_SERVICE_URL:http://kafka-streams:8080}
+          predicates:
+            - Path=/kafka-streams/**
+          filters:
+            - RewritePath=/kafka-streams/(?<path>.*), /$\{path}
+            - name: CircuitBreaker
+              args:
+                name: streamsServiceCircuitBreaker
+                fallbackUri: forward:/fallback/streams-fallback
+
 
   redis:
     connect-timeout: 20s
@@ -86,7 +98,7 @@ spring:
     store-type: redis
     timeout: 10m
     redis:
-      namespace: order:gateway
+      namespace: twitter:gateway
 
   keycloak:
     server-url: http://keycloak-server:8080
@@ -95,18 +107,18 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${spring.keycloak.server-external-url}/realms/order-realm
-          jwk-set-uri: ${spring.keycloak.server-url}/realms/order-realm/protocol/openid-connect/certs
+          issuer-uri: ${spring.keycloak.server-external-url}/realms/twitter-realm
+          jwk-set-uri: ${spring.keycloak.server-url}/realms/twitter-realm/protocol/openid-connect/certs
 
 jwt:
   auth:
     converter:
-      resource-id: order-app
+      resource-id: twitter-app
       principal-attribute: preferred_username
 
-order-app:
-  base-url: https://book.greeta.net
-  redirect-url: ${order-app.base-url}/*
+twitter-app:
+  base-url: https://twitter.greeta.net
+  redirect-url: ${twitter-app.base-url}/*
 
 resilience4j:
   circuitbreaker:
@@ -128,8 +140,10 @@ logging:
     level: "%5p [${spring.application.name},%X{trace_id},%X{span_id}]"
     console: "%d{yyyy-MM-dd HH:mm:ss} ${LOG_LEVEL_PATTERN:-%5p} %m%n"
   level:
+    net.greeta.twitter: DEBUG
     circuitbreaker: info
     org.springframework.cloud.kubernetes: TRACE
+    org.springframework.security: DEBUG
 
 info:
   system: Gateway Service
@@ -162,14 +176,26 @@ springdoc:
     enabled: true
   swagger-ui:
     enabled: true
-    groups-order: DESC
+    # groups-order: DESC
     path: /
     config-url: /v3/api-docs/swagger-config
     urls:
       # - url: /v3/api-docs
       #   name: API Gateway Service
       #   primaryName: API Gateway Service
-      - url: /customer/v3/api-docs
-        name: Customer Service
-      - url: /order/v3/api-docs
-        name: Order Service
+      - url: /elastic-query/v3/api-docs
+        name: Elastic Query Service
+      - url: /analytics/v3/api-docs
+        name: Analytics Service
+      - url: /kafka-streams/v3/api-docs
+        name: Kafka Streams Service
+
+gateway-service:
+  timeout-ms: 3000
+  failure-rate-threshold: 50
+  slow-call-rate-threshold: 50
+  slow-call-duration-threshold: 50
+  permitted-num-of-calls-in-half-open-state: 10
+  sliding-window-size: 10
+  min-number-of-calls: 10
+  wait-duration-in-open-state: 60000

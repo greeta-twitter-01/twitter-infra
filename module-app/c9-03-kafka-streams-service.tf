@@ -1,39 +1,22 @@
-resource "kubernetes_config_map_v1" "gateway" {
+resource "kubernetes_config_map_v1" "kafka_streams" {
   metadata {
-    name      = "gateway"
+    name      = "kafka-streams"
     labels = {
-      app = "gateway"
+      app = "kafka-streams"
     }
   }
 
   data = {
-    "gateway.yml" = file("${path.module}/app-conf/gateway.yml")
+    "application.yml" = file("${path.module}/app-conf/kafka-streams.yml")
   }
 }
 
-resource "kubernetes_secret_v1" "gateway" {
+resource "kubernetes_deployment_v1" "kafka_streams_deployment" {
+  depends_on = [kubernetes_deployment_v1.twitter_postgres_deployment]
   metadata {
-    name = "gateway"
-  }
-
-  data = {
-    "spring.redis.host"     = "gateway-redis"
-    "spring.redis.port"     = "6379"
-    "spring.redis.username" = "default"
-  }
-}
-
-
-resource "kubernetes_deployment_v1" "gateway_deployment" {
-  depends_on = [kubernetes_deployment_v1.gateway_redis_deployment,
-                kubernetes_deployment_v1.order_deployment,
-                kubernetes_deployment_v1.customer_deployment,
-                kubernetes_deployment_v1.payment_deployment,
-                kubernetes_deployment_v1.restaurant_deployment]
-  metadata {
-    name = "gateway"
+    name = "kafka-streams"
     labels = {
-      app = "gateway"
+      app = "kafka-streams"
     }
   }
  
@@ -41,13 +24,13 @@ resource "kubernetes_deployment_v1" "gateway_deployment" {
     replicas = 1
     selector {
       match_labels = {
-        app = "gateway"
+        app = "kafka-streams"
       }
     }
     template {
       metadata {
         labels = {
-          app = "gateway"
+          app = "kafka-streams"
         }
         annotations = {
           "prometheus.io/scrape" = "true"
@@ -56,34 +39,27 @@ resource "kubernetes_deployment_v1" "gateway_deployment" {
         }        
       }
       spec {
-        service_account_name = "spring-cloud-kubernetes"
-
-        volume {
-          name = "gateway-config-volume"    
-          config_map {
-            name = "gateway"
-          }
-        }
-
-        volume {
-          name = "gateway-secret-volume"
-          secret {
-            secret_name = "gateway"
-          }
-        }               
+        service_account_name = "spring-cloud-kubernetes"      
         
         container {
-          image = "ghcr.io/greeta-restaurant-01/gateway-service:f86173d1bb5bcfe5ea3ecc1b91057147c159655c"
-          name  = "gateway"
+          image = "ghcr.io/greeta-twitter-01/kafka-streams-service:f86173d1bb5bcfe5ea3ecc1b91057147c159655c"
+          name  = "kafka-streams"
           image_pull_policy = "Always"
           port {
             container_port = 8080
           }
+          port {
+            container_port = 8003
+          }                      
+          env {
+            name  = "SPRING_CLOUD_BOOTSTRAP_ENABLED"
+            value = "true"
+          }
 
           env {
-            name  = "SPRING_CONFIG_LOCATION"
-            value = "classpath:application.yml,file:/config-repo/gateway.yml"
-          } 
+            name  = "SPRING_CLOUD_KUBERNETES_SECRETS_ENABLEAPI"
+            value = "true"
+          }
 
           env {
             name  = "JAVA_TOOL_OPTIONS"
@@ -92,7 +68,7 @@ resource "kubernetes_deployment_v1" "gateway_deployment" {
 
           env {
             name  = "OTEL_SERVICE_NAME"
-            value = "gateway"
+            value = "kafka-streams"
           }
 
           env {
@@ -103,17 +79,17 @@ resource "kubernetes_deployment_v1" "gateway_deployment" {
           env {
             name  = "OTEL_METRICS_EXPORTER"
             value = "none"
-          } 
+          }
 
-          env {
+           env {
             name  = "BPL_DEBUG_ENABLED"
             value = "true"
           }
 
           env {
             name  = "BPL_DEBUG_PORT"
-            value = "8000"
-          }                 
+            value = "8003"
+          }          
 
           # resources {
           #   requests = {
@@ -150,28 +126,17 @@ resource "kubernetes_deployment_v1" "gateway_deployment" {
           #   }
           #   initial_delay_seconds = 20
           #   period_seconds        = 15
-          # }                           
-
-          volume_mount {
-            name       = "gateway-config-volume"
-            mount_path = "/config-repo"
-          }
-
-          volume_mount {
-            name      = "gateway-secret-volume"
-            mount_path = "/workspace/secrets/redis"
-          }             
- 
+          # }  
+         
         }
-
       }
     }
   }
 }
 
-resource "kubernetes_horizontal_pod_autoscaler_v1" "gateway_hpa" {
+resource "kubernetes_horizontal_pod_autoscaler_v1" "kafka_streams_hpa" {
   metadata {
-    name = "gateway-hpa"
+    name = "kafka-streams-hpa"
   }
   spec {
     max_replicas = 2
@@ -179,20 +144,24 @@ resource "kubernetes_horizontal_pod_autoscaler_v1" "gateway_hpa" {
     scale_target_ref {
       api_version = "apps/v1"
       kind = "Deployment"
-      name = kubernetes_deployment_v1.gateway_deployment.metadata[0].name 
+      name = kubernetes_deployment_v1.kafka_streams_deployment.metadata[0].name 
     }
     target_cpu_utilization_percentage = 70
   }
 }
 
-resource "kubernetes_service_v1" "gateway_service" {
-  depends_on = [kubernetes_deployment_v1.gateway_deployment]
+resource "kubernetes_service_v1" "kafka_streams_service" {
+  depends_on = [kubernetes_deployment_v1.kafka_streams_deployment]
   metadata {
-    name = "gateway"
+    name = "kafka-streams"
+    labels = {
+      app = "kafka-streams"
+      spring-boot = "true"
+    }
   }
   spec {
     selector = {
-      app = "gateway"
+      app = "kafka-streams"
     }
     port {
       port = 8080

@@ -1,13 +1,13 @@
 # Resource: Order Postgres Kubernetes Deployment
-resource "kubernetes_deployment_v1" "order_postgres_deployment" {
+resource "kubernetes_deployment_v1" "twitter_postgres_deployment" {
   metadata {
-    name = "order-postgres"
+    name = "twitter-postgres"
   }
   spec {
     replicas = 1
     selector {
       match_labels = {
-        app = "order-postgres"
+        app = "twitter-postgres"
       }          
     }
     strategy {
@@ -16,13 +16,13 @@ resource "kubernetes_deployment_v1" "order_postgres_deployment" {
     template {
       metadata {
         labels = {
-          app = "order-postgres"
+          app = "twitter-postgres"
         }
       }
       spec {
 
         container {
-          name = "order-postgres"
+          name = "twitter-postgres"
           image = "postgres:14.4"
           port {
             container_port = 5432
@@ -53,13 +53,13 @@ resource "kubernetes_deployment_v1" "order_postgres_deployment" {
 }
 
 # Resource: Keyloak Postgres Load Balancer Service
-resource "kubernetes_service_v1" "order_postgres_service" {
+resource "kubernetes_service_v1" "twitter_postgres_service" {
   metadata {
-    name = "order-postgres"
+    name = "twitter-postgres"
   }
   spec {
     selector = {
-      app = kubernetes_deployment_v1.order_postgres_deployment.spec.0.selector.0.match_labels.app 
+      app = kubernetes_deployment_v1.twitter_postgres_deployment.spec.0.selector.0.match_labels.app 
     }
     port {
       port        = 5432 # Service Port
@@ -71,9 +71,9 @@ resource "kubernetes_service_v1" "order_postgres_service" {
 }
 
 # Resource: order Postgres Horizontal Pod Autoscaler
-resource "kubernetes_horizontal_pod_autoscaler_v1" "order_postgres_hpa" {
+resource "kubernetes_horizontal_pod_autoscaler_v1" "twitter_postgres_hpa" {
   metadata {
-    name = "order-postgres-hpa"
+    name = "twitter-postgres-hpa"
   }
   spec {
     max_replicas = 2
@@ -81,7 +81,7 @@ resource "kubernetes_horizontal_pod_autoscaler_v1" "order_postgres_hpa" {
     scale_target_ref {
       api_version = "apps/v1"
       kind = "Deployment"
-      name = kubernetes_deployment_v1.order_postgres_deployment.metadata[0].name 
+      name = kubernetes_deployment_v1.twitter_postgres_deployment.metadata[0].name 
     }
     target_cpu_utilization_percentage = 80
   }
