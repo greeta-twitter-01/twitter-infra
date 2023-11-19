@@ -1,9 +1,9 @@
 ### 📖 AWS Startup Template For Spring Boot Developers
 
 <ul style="list-style-type:disc">
-  <li>This <b>AWS Full-Stack Developer Template</b> provides fully functional end-to-end local and production development environment</li>
+  <li>This <b>AWS Full-Stack Developer Template</b> provides fully functional Development Environment</li>
     <li><b>Spring Boot Microservices</b> Source Code</li>
-    <li><b>Local b>Docker</b> Environment</li>
+    <li><b>Local <b>Docker</b> Environment</li>
     <li><b>Github Actions</b> CI/CD pipeline</li>
     <li><b>AWS Terraform</b> Infrastructure with <b>AWS EKS Kubernetes Cluster</b></li>
   <li>Full <b>Technology Stack</b> list:</li>
