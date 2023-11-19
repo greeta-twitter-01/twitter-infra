@@ -29,8 +29,12 @@
   </ul>
 </ul>
 
-[API Source Code and Docker Images Repository]([https://github.com/Rapter1990](https://github.com/greeta-twitter-01/twitter-api)
-[Terraform Infrastructure and GitOps Pipeline]([https://github.com/Rapter1990](https://github.com/greeta-twitter-01/twitter-infra)
+### 📖 Source Code
+
+- [API Source Code and Docker Images Repository](https://github.com/greeta-twitter-01/twitter-api)
+- [Terraform Infrastructure and GitOps Pipeline](https://github.com/greeta-twitter-01/twitter-infra)
+
+### 📖 Step By Step Guide
 
 **Keycloak Administration Console** will be available here: **https://keycloak.yourdomain.com**
 
