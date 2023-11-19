@@ -2,7 +2,9 @@
 
 <ul style="list-style-type:disc">
   <li>This <b>AWS Full-Stack Developer Template</b> provides fully functional end-to-end build pipeline from source code to AWS Infrastructure</li> 
- <li>The following <b>Technology Stack</b> has been used:</li>
+  <li>[API Source Code and Docker Images Repository]([https://github.com/Rapter1990](https://github.com/greeta-twitter-01/twitter-api)</li>
+  <li>[Terraform Infrastructure and GitOps Pipeline]([https://github.com/Rapter1990](https://github.com/greeta-twitter-01/twitter-infra)</li>
+  <li>The following <b>Technology Stack</b> has been used:</li>
   <ul>
     <li><b>Swagger UI</b></li>
     <li><b>Spring Boot</b></li>
