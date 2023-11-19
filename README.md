@@ -1,8 +1,8 @@
 ### 📖 AWS Startup Template For Spring Boot Developers
 
 <ul style="list-style-type:disc">
-  <li>This <b>AWS Full-Stack Developer Template</b> shows fully functional end-to-end build pipeline from source code to AWS Infrastructure</li> 
-  <li>Technology Stack:</li>
+  <li>### This <b>AWS Full-Stack Developer Template</b> provides fully functional end-to-end build pipeline from source code to AWS Infrastructure</li> 
+  <li>### Technology Stack:</li>
   <ul>
     <li>Swagger UI</li>
     <li>Spring Boot</li>
