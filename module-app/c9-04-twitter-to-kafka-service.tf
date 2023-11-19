@@ -42,7 +42,7 @@ resource "kubernetes_deployment_v1" "twitter_to_kafka_deployment" {
         service_account_name = "spring-cloud-kubernetes"      
         
         container {
-          image = "ghcr.io/greeta-twitter-01/twitter-to-kafka-service:ecbd7e504735e12b23f791c4927f0793bcfe8150"
+          image = "ghcr.io/greeta-twitter-01/twitter-to-kafka-service:20ee83a2227c1aad96355049451a8d229b77ab27"
           name  = "twitter-to-kafka"
           image_pull_policy = "Always"
           port {
