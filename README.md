@@ -2,34 +2,34 @@
 
 <ul style="list-style-type:disc">
   <li>This <b>AWS Full-Stack Developer Template</b> provides fully functional Development Environment</li>
-    <li><b>Spring Boot Microservices</b> Source Code</li>
-    <li>Local <b>Docker</b> Environment</li>
-    <li><b>Github Actions</b> CI/CD pipeline</li>
-    <li><b>AWS Terraform</b> Infrastructure with <b>AWS EKS Kubernetes Cluster</b></li>
-  <li>Full <b>Technology Stack</b> list:</li>
+    <li>📖 <b>Spring Boot Microservices</b> Source Code</li>
+    <li>📖 Local <b>Docker</b> Environment</li>
+    <li>📖 <b>Github Actions</b> CI/CD pipeline</li>
+    <li>📖 <b>AWS Terraform</b> Infrastructure with <b>AWS EKS Kubernetes Cluster</b></li>
+  <li>📖 Full <b>Technology Stack</b>:</li>
   <ul>
-    <li><b>Swagger UI</b></li>
-    <li><b>Spring Boot</b></li>
-    <li><b>Terraform</b></li>
-    <li><b>Kubernetes</b></li>
-    <li><b>Kafka Streams</b></li>
-    <li><b>Twitter to Kafka Event Streaming</b></li>
-    <li><b>Kafka State Store</b></li>
-    <li><b>Elasticsearch</b></li>
-    <li><b>Elastic Query Service</b></li>
-    <li><b>Kafka UI</b></li>
-    <li><b>Event-Driven Microservices</b></li>
-    <li><b>CQRS</b></li>
-    <li><b>Keycloak Oauth2 Authorization Server</b></li>
-    <li><b>Github Actions</b></li>
-    <li><b>Local Docker Environment</b></li>
-    <li><b>Remote Debugging</b></li>
-    <li><b>Spring Cloud Gateway</b></li>    
-    <li><b>AWS SSL Certificate</b></li>  
-    <li><b>External DNS</b></li>  
-    <li><b>AWS Load Balancer Controller</b></li>  
-    <li><b>Spring Cloud Kubernetes</b></li>  
-    <li><b>Grafana Observability Stack</b></li>     
+    <li>✅ <b>Swagger UI</b></li>
+    <li>✅ <b>Spring Boot</b></li>
+    <li>✅ <b>Terraform</b></li>
+    <li>✅ <b>Kubernetes</b></li>
+    <li>✅ <b>Kafka Streams</b></li>
+    <li>✅ <b>Twitter to Kafka Event Streaming</b></li>
+    <li>✅ <b>Kafka State Store</b></li>
+    <li>✅ <b>Elasticsearch</b></li>
+    <li>✅ <b>Elastic Query Service</b></li>
+    <li>✅ <b>Kafka UI</b></li>
+    <li>✅ <b>Event-Driven Microservices</b></li>
+    <li>✅ <b>CQRS</b></li>
+    <li>✅ <b>Keycloak Oauth2 Authorization Server</b></li>
+    <li>✅ <b>Github Actions</b></li>
+    <li>✅ <b>Local Docker Environment</b></li>
+    <li>✅ <b>Remote Debugging</b></li>
+    <li>✅ <b>Spring Cloud Gateway</b></li>    
+    <li>✅ <b>AWS SSL Certificate</b></li>  
+    <li>✅ <b>External DNS</b></li>  
+    <li>✅ <b>AWS Load Balancer Controller</b></li>  
+    <li>✅ <b>Spring Cloud Kubernetes</b></li>  
+    <li>✅ <b>Grafana Observability Stack</b></li>     
   </ul>
 </ul>
 
