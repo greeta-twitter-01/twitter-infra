@@ -4,7 +4,7 @@
   <li>📖 This <b>AWS Full-Stack Developer Template</b> provides fully functional Development Environment</li>
     <li>📖 <b>Spring Boot Microservices</b> Source Code</li>
     <li>📖 Local <b>Docker</b> Environment</li>
-    <li>📖 <b>Github Actions</b> CI/CD pipeline</li>
+    <li>📖 <b>Github Actions</b> CI/CD <b>GitOps</b> pipeline</li>
     <li>📖 <b>AWS Terraform</b> Infrastructure with <b>AWS EKS Kubernetes Cluster</b></li>
   <li>📖 Full <b>Technology Stack</b>:</li>
   <ul>
