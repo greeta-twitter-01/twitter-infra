@@ -20,6 +20,7 @@
     <li>✅ <b>Kafka UI</b></li>
     <li>✅ <b>Event-Driven Microservices</b></li>
     <li>✅ <b>CQRS</b></li>
+    <li>✅ <b>PostgreSQL Database</b></li>
     <li>✅ <b>Keycloak Oauth2 Authorization Server</b></li>
     <li>✅ <b>Github Actions</b></li>
     <li>✅ <b>Local Docker Environment</b></li>
