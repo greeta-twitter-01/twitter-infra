@@ -1,31 +1,31 @@
 ### 📖 AWS Startup Template For Spring Boot Developers
 
 <ul style="list-style-type:disc">
-  <li>### This <b>AWS Full-Stack Developer Template</b> provides fully functional end-to-end build pipeline from source code to AWS Infrastructure</li> 
-  <li>### Technology Stack:</li>
+  <li>This <b>AWS Full-Stack Developer Template</b> provides fully functional end-to-end build pipeline from source code to AWS Infrastructure</li> 
+ <li>The following <b>Technology Stack</b> has been used:</li>
   <ul>
-    <li>Swagger UI</li>
-    <li>Spring Boot</li>
-    <li>Terraform</li>
-    <li>Kubernetes</li>
-    <li>Kafka Streams</li>
-    <li>Twitter to Kafka Event Streaming</li>
-    <li>Kafka State Store</li>
-    <li>Elasticsearch</li>
-    <li>Elastic Query Service</li>
-    <li>Kafka UI</li>
-    <li>Event-Driven Microservices</li>
-    <li>CQRS</li>
-    <li>Keycloak Oauth2 Authorization Server</li>
-    <li>Github Actions</li>
-    <li>Local Docker Environment</li>
-    <li>Remote Debugging</li>
-    <li>Spring Cloud Gateway</li>    
-    <li>AWS SSL Certificate</li>  
-    <li>External DNS</li>  
-    <li>AWS Load Balancer Controller</li>  
-    <li>Spring Cloud Kubernetes</li>  
-    <li>Grafana Observability Stack</li>     
+    <li><b>Swagger UI</b></li>
+    <li><b>Spring Boot</b></li>
+    <li><b>Terraform</b></li>
+    <li><b>Kubernetes</b></li>
+    <li><b>Kafka Streams</b></li>
+    <li><b>Twitter to Kafka Event Streaming</b></li>
+    <li><b>Kafka State Store</b></li>
+    <li><b>Elasticsearch</b></li>
+    <li><b>Elastic Query Service</b></li>
+    <li><b>Kafka UI</b></li>
+    <li><b>Event-Driven Microservices</b></li>
+    <li><b>CQRS</b></li>
+    <li><b>Keycloak Oauth2 Authorization Server</b></li>
+    <li><b>Github Actions</b></li>
+    <li><b>Local Docker Environment</b></li>
+    <li><b>Remote Debugging</b></li>
+    <li><b>Spring Cloud Gateway</b></li>    
+    <li><b>AWS SSL Certificate</b></li>  
+    <li><b>External DNS</b></li>  
+    <li><b>AWS Load Balancer Controller</b></li>  
+    <li><b>Spring Cloud Kubernetes</b></li>  
+    <li><b>Grafana Observability Stack</b></li>     
   </ul>
 </ul>
 
