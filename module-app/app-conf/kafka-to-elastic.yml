@@ -85,7 +85,7 @@ retry-config:
 
 elastic-config:
   index-name: twitter-index
-  connection-url: elastic:9200
+  connection-url: twitter-elastic:9200
   connect-timeout-ms: 5000
   socket-timeout-ms: 30000
   is-repository: true

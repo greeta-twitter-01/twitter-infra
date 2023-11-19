@@ -53,6 +53,11 @@ resource "kubernetes_deployment_v1" "elastic_query_deployment" {
           } 
 
           env {
+            name  = "SERVER_PORT"
+            value = "8080"
+          }
+
+          env {
             name  = "SPRING_CLOUD_BOOTSTRAP_ENABLED"
             value = "true"
           }

@@ -17,7 +17,7 @@
 
 ###### **regular password:** user
 
-###### **Oauth2 Client:** order-app
+###### **Oauth2 Client:** twitter-app
 
 
 **Grafana Observability Stack**, will be available here: **https://grafana.yourdomain.com**
@@ -29,9 +29,9 @@
 
 ### Step 01 - Clone repositories
 
-**https://github.com/greeta-restaurant-01/order-api** (API Source Code and Docker Images Repository)
+**https://github.com/greeta-twitter-01/twitter-api** (API Source Code and Docker Images Repository)
 
-**https://github.com/greeta-restaurant-01/order-infra** (Terraform Infrastructure and GitOps Pipeline)
+**https://github.com/greeta-twitter-01/twitter-infra** (Terraform Infrastructure and GitOps Pipeline)
 
 ### Step-02: Prepare Your AWS Account
 
@@ -45,37 +45,37 @@
 
 - make sure you have your own Github Account or Organization
 
-- clone order-api and order-infra repositories to your github profile or organization
+- clone twitter-api and twitter-infra repositories to your github profile or organization
 
-- In your cloned order-api Github Repository, go to Settings -> Secrets and Variables -> Actions -> New Repository Secret and create DISPATCH_TOKEN secret with the value of your personal github token (You need to create personal token in Developer Settings and make sure you give it workflow permissions)
+- In your cloned twitter-api Github Repository, go to Settings -> Secrets and Variables -> Actions -> New Repository Secret and create DISPATCH_TOKEN secret with the value of your personal github token (You need to create personal token in Developer Settings and make sure you give it workflow permissions)
 
-- make sure your order-api repository docker images is public by default (you need to change it in github settings: https://docs.github.com/en/packages/learn-github-packages/configuring-a-packages-access-control-and-visibility)
+- make sure your twitter-api repository docker images is public by default (you need to change it in github settings: https://docs.github.com/en/packages/learn-github-packages/configuring-a-packages-access-control-and-visibility)
 
 
 ### Step-04: Prepare API Source Code and Github Actions Workflow:
 
-- go to the root directory of your cloned order-api, order-infra github repository
+- go to the root directory of your cloned twitter-api, twitter-infra github repository
 
-- Edit "**.github/workflows**" files: replace "**greeta-restaurant-01**" with the name of your github profile or organization; replace "**order-api and order-infra**" with the names of your cloned or forked repositories (or leave the names like this if you don't want to change the names); replace "**master**" with the name of your main branch (or leave it like this, if you don't want to change, but please, note that you would have to change default main branch name in github settings)
+- Edit "**.github/workflows**" files: replace "**greeta-twitter-01**" with the name of your github profile or organization; replace "**twitter-api and twitter-infra**" with the names of your cloned or forked repositories (or leave the names like this if you don't want to change the names); replace "**master**" with the name of your main branch (or leave it like this, if you don't want to change, but please, note that you would have to change default main branch name in github settings)
 
 
 ### Step-05: Prepare Terraform Infrastructure:
 
-- go to the root directory of your cloned order-infra github repository
+- go to the root directory of your cloned twitter-infra github repository
 
-- create terraform.auto.tfvars in your order-infra repository and provide your own aws_region and ssl_certificate_arn
+- create terraform.auto.tfvars in your twitter-infra repository and provide your own aws_region and ssl_certificate_arn
 
 ```
 aws_region = "eu-central-1"
 environment = "dev"
 business_division = "it"
-cluster_name = "order-cluster"
+cluster_name = "twitter-cluster"
 ssl_certificate_arn = "arn:aws:acm:eu-central-1:your-certificate-arn"
 ```
 
-- replace "greeta.net" in terraform files of order-infra repository, with the name of your domain (please, use search to find all files, where "greeta.net" is used)
+- replace "greeta.net" in terraform files of twitter-infra repository, with the name of your domain (please, use search to find all files, where "greeta.net" is used)
 
-- Commit your order-infra changes to github (don't worry, terraform.auto.tfvars is in .gitignore and it won't be committed)
+- Commit your twitter-infra changes to github (don't worry, terraform.auto.tfvars is in .gitignore and it won't be committed)
 ```
 git add .
 git commit -m "your comment"
@@ -84,25 +84,25 @@ git push origin
 
 ### Step-06: Build Docker Images with Github Actions
 
-- go to the root directory of your cloned order-api github repository
+- go to the root directory of your cloned twitter-api github repository
 
-- Commit your order-api changes to github (it should trigger creation of docker images pipeline and also trigger order-infra pipeline)
+- Commit your twitter-api changes to github (it should trigger creation of docker images pipeline and also trigger twitter-infra pipeline)
 ```
 git add .
 git commit -m "your comment"
 git push origin
 ````
 
-- wait until order-api pipeline in github is finished and order-infra pipeline is started
+- wait until twitter-api pipeline in github is finished and twitter-infra pipeline is started
 
-- order-infra pipeline automatically changes docker image versions to the versions of docker images, created in order-api pipeline and pushes new docker image versions to order-infra repository
+- twitter-infra pipeline automatically changes docker image versions to the versions of docker images, created in twitter-api pipeline and pushes new docker image versions to twitter-infra repository
 
 
 ### Step-07: Deploy Infrastructure to AWS with Terraform:
 
-- go to the root directory of your cloned order-infra github repository
+- go to the root directory of your cloned twitter-infra github repository
 
-- pull changes from order-infra repository and run terraform
+- pull changes from twitter-infra repository and run terraform
 
 ```
 git pull
@@ -119,12 +119,12 @@ kubectl get secret --namespace observability-stack loki-stack-grafana -o jsonpat
 
 ### Step-08: Test your Microservices:
 
-- go to "**https://bookapi.yourdomain.com**"
+- go to "**https://twitterapi.yourdomain.com**"
 
 - you should see successfully loaded "**Swagger UI REST API Documentation**" page with drop-down selection of microservices
-- Select book or ERP microservice from the drop-down list
+- Select microservice from the drop-down list
 - Click **Authorize** button and login with admin/admin (full access) or user/user (limited access)
-- In **Authorize** dialog window you should also provide the name of the OAuth2 Client (**order-app** )
+- In **Authorize** dialog window you should also provide the name of the OAuth2 Client (**twitter-app** )
 - After successfull authorization, try any REST API endpoint
 - Go to https://grafana.yourdomain.com and find the logs and traces, generated by the endpoints (Find "Explore" menu, then go to "Loki", select "app" and then select the name of the microservice and then "Run Query")
 
@@ -148,4 +148,4 @@ Please make sure you run terraform-destroy.sh script, instead of just calling te
 sh terraform-destroy.sh  
 ```
 
-If you accidentally used **terraform destroy** directly, then wait for about 20 minutes, then you need to remove all resources manually with AWS Console: EC2 - Load Balancer, EKS - order-cluster, VPC - sandbox, Route 53 Records, IAM Roles. If VPC is failed to delete, wait for EKS cluster to finish deletion.
+If you accidentally used **terraform destroy** directly, then wait for about 20 minutes, then you need to remove all resources manually with AWS Console: EC2 - Load Balancer, EKS - twitter-cluster, VPC - sandbox, Route 53 Records, IAM Roles. If VPC is failed to delete, wait for EKS cluster to finish deletion.

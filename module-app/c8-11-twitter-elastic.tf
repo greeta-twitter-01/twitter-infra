@@ -56,7 +56,7 @@ resource "kubernetes_deployment_v1" "twitter_elastic" {
 
           env {
             name  = "ES_JAVA_OPTS"
-            value = "Xms512m -Xmx512m"
+            value = "-Xms512m -Xmx512m"
           }                    
 
         }

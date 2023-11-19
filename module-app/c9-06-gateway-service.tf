@@ -82,6 +82,11 @@ resource "kubernetes_deployment_v1" "gateway_deployment" {
           }
 
           env {
+            name  = "SERVER_PORT"
+            value = "8080"
+          }          
+
+          env {
             name  = "SPRING_CONFIG_LOCATION"
             value = "classpath:application.yml,file:/config-repo/gateway.yml"
           } 
