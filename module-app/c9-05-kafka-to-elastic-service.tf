@@ -42,7 +42,7 @@ resource "kubernetes_deployment_v1" "kafka_to_elastic_deployment" {
         service_account_name = "spring-cloud-kubernetes"      
         
         container {
-          image = "ghcr.io/greeta-twitter-01/kafka-to-elastic-service:f86173d1bb5bcfe5ea3ecc1b91057147c159655c"
+          image = "ghcr.io/greeta-twitter-01/kafka-to-elastic-service:ff6a98d4aebec327681899695953504df71b2fa9"
           name  = "kafka-to-elastic"
           image_pull_policy = "Always"
           port {
