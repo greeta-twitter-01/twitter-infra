@@ -1,5 +1,33 @@
-### AWS Startup Template For Spring Boot Developers
-#### Welcome to AWS Full-Stack Developer Template: Swagger UI + Spring Boot + Terraform + Kubernetes + Kafka Streams + Twitter to Kafka Event Streaming + Kafka State Store + Elasticsearch + Elastic Query Service + Kafka UI + Event-Driven Microservices + CQRS + Keycloak Oauth2 Authorization Server + Github Actions + Local Docker Environment + Remote Debugging + Spring Cloud Gateway + AWS SSL Certificate + External DNS + AWS Load Balancer Controller + Spring Cloud Kubernetes + Grafana Observability Stack
+### 📖 AWS Startup Template For Spring Boot Developers
+
+<ul style="list-style-type:disc">
+  <li>This <b>AWS Full-Stack Developer Template</b> shows fully functional end-to-end build pipeline from source code to AWS Infrastructure</li> 
+  <li>Technology Stack:</li>
+  <ul>
+    <li>Swagger UI</li>
+    <li>Spring Boot</li>
+    <li>Terraform</li>
+    <li>Kubernetes</li>
+    <li>Kafka Streams</li>
+    <li>Twitter to Kafka Event Streaming</li>
+    <li>Kafka State Store</li>
+    <li>Elasticsearch</li>
+    <li>Elastic Query Service</li>
+    <li>Kafka UI</li>
+    <li>Event-Driven Microservices</li>
+    <li>CQRS</li>
+    <li>Keycloak Oauth2 Authorization Server</li>
+    <li>Github Actions</li>
+    <li>Local Docker Environment</li>
+    <li>Remote Debugging</li>
+    <li>Spring Cloud Gateway</li>    
+    <li>AWS SSL Certificate</li>  
+    <li>External DNS</li>  
+    <li>AWS Load Balancer Controller</li>  
+    <li>Spring Cloud Kubernetes</li>  
+    <li>Grafana Observability Stack</li>     
+  </ul>
+</ul>
 
 **Keycloak Administration Console** will be available here: **https://keycloak.yourdomain.com**
 
