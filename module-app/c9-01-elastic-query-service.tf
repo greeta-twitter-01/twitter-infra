@@ -42,7 +42,7 @@ resource "kubernetes_deployment_v1" "elastic_query_deployment" {
         service_account_name = "spring-cloud-kubernetes"      
         
         container {
-          image = "ghcr.io/greeta-twitter-01/elastic-query-service:20ee83a2227c1aad96355049451a8d229b77ab27"
+          image = "ghcr.io/greeta-twitter-01/elastic-query-service:e997396c9a65733738bbfee25f37235f04660ddc"
           name  = "elastic-query"
           image_pull_policy = "Always"
           port {
